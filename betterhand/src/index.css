@@ -1,0 +1,44 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * { box-sizing:border-box; margin:0; padding:0 }
+  html { scroll-behavior:smooth }
+  body { font-family:'Plus Jakarta Sans',sans-serif; @apply text-ink-800 antialiased; background:#fdf8f6; min-height:100vh }
+  h1,h2,h3,h4,h5,h6 { font-family:'Fraunces',Georgia,serif }
+  ::selection { @apply bg-brand-200 text-brand-900 }
+  ::-webkit-scrollbar { width:6px }
+  ::-webkit-scrollbar-thumb { @apply bg-brand-200 rounded-full }
+}
+
+@layer components {
+  .btn-primary { @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-gradient-to-br from-brand-600 to-brand-700 text-white font-body font-semibold text-sm rounded-xl shadow-soft hover:shadow-glow hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 }
+  .btn-secondary { @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-white text-ink-600 font-body font-semibold text-sm rounded-xl border border-ink-200 hover:border-brand-300 hover:text-brand-600 hover:bg-brand-50 transition-all duration-200 }
+  .btn-danger { @apply inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-brand-50 text-brand-600 font-body font-semibold text-sm rounded-xl border border-brand-200 hover:bg-brand-100 transition-all }
+  .btn-ghost { @apply inline-flex items-center justify-center gap-2 px-4 py-2 text-ink-500 font-body text-sm rounded-lg hover:bg-ink-100 hover:text-ink-700 transition-all }
+  .card { @apply bg-white rounded-2xl border border-ink-200/60 shadow-card transition-all duration-300 }
+  .card:hover { @apply shadow-card-hover }
+  .input { @apply w-full border border-ink-200 rounded-xl px-4 py-3 text-ink-800 placeholder-ink-400 font-body text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-300/40 focus:border-brand-400 transition-all duration-200 }
+  .select { @apply input appearance-none cursor-pointer; color:#332e2b!important; background:#fff!important }
+  .select option { background:#fff!important; color:#332e2b!important }
+  .label { @apply block text-sm font-body font-semibold text-ink-500 mb-1.5 }
+  .badge { @apply inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-body font-semibold }
+  .badge-brand { @apply bg-brand-100 text-brand-700 }
+  .badge-red { @apply bg-brand-100 text-brand-700 }
+  .badge-green { @apply bg-emerald-100 text-emerald-700 }
+  .badge-yellow { @apply bg-amber-100 text-amber-700 }
+  .badge-blue { @apply bg-sky-100 text-sky-700 }
+  .badge-gray { @apply bg-ink-100 text-ink-600 }
+  .section-title { @apply font-display text-3xl font-bold text-ink-900 tracking-tight }
+  .stat-card { @apply card p-5 hover:-translate-y-1 }
+  .divider { @apply border-t border-ink-200/60 }
+  .glass { @apply bg-white/75 backdrop-blur-xl border border-white/50 }
+}
+
+.bg-blood { @apply bg-brand-50 text-brand-600 border border-brand-200 rounded-xl px-3 py-1.5 font-bold font-mono text-sm }
+.leaflet-container { border-radius:1rem }
+.leaflet-control-attribution { display:none!important }
+@keyframes gradient-x { 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
+.animate-gradient { background-size:200% 200%; animation:gradient-x 5s ease infinite }
+.text-balance { text-wrap:balance }
