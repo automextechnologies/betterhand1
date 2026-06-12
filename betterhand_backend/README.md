@@ -1,0 +1,36 @@
+# 🩸 BetterHand Backend
+
+## Quick Start
+
+```bash
+# 1. Install Python 3.11+
+# 2. Create virtual environment
+python3 -m venv venv
+source venv/bin/activate        # Windows: venv\Scripts\activate
+
+# 3. Install dependencies
+pip install -r requirements.txt
+
+# 4. Copy env file and fill in your values
+cp .env.example .env
+
+# 5. Setup PostgreSQL database
+createdb betterhand_db
+
+# 6. Run migrations
+python manage.py makemigrations
+python manage.py migrate
+
+# 7. Create admin user
+python manage.py createsuperuser
+
+# 8. Run server
+python manage.py runserver
+```
+
+## API Endpoints
+
+### Auth
+- `POST /api/accounts/hospital/register/`
+- `POST /api/accounts/donor/register/`
+- `POST /api/accounts/login/`
