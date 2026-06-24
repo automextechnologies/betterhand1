@@ -33,7 +33,18 @@
   .section-title { @apply font-display text-3xl font-bold text-ink-900 tracking-tight }
   .stat-card { @apply card p-5 hover:-translate-y-1 }
   .divider { @apply border-t border-ink-200/60 }
-  .glass { @apply bg-white/75 backdrop-blur-xl border border-white/50 }
+  .glass { @apply bg-white/60 backdrop-blur-2xl border border-white/80 shadow-soft relative overflow-hidden; }
+  .glass::before { content:''; @apply absolute inset-0 bg-gradient-to-br from-white/40 to-transparent pointer-events-none; }
+  .glass-dark { @apply bg-ink-900/70 backdrop-blur-2xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.3)] relative overflow-hidden; }
+  .glass-dark::before { content:''; @apply absolute inset-0 bg-gradient-to-br from-white/10 to-transparent pointer-events-none; }
+  .mesh-bg { 
+    background-color: #faf8ff;
+    background-image: 
+      radial-gradient(at 0% 0%, hsla(347,100%,88%,1) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, hsla(350,100%,94%,1) 0px, transparent 50%),
+      radial-gradient(at 100% 100%, hsla(347,100%,88%,0.8) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, hsla(350,100%,94%,1) 0px, transparent 50%);
+  }
 }
 
 .bg-blood { @apply bg-brand-50 text-brand-600 border border-brand-200 rounded-xl px-3 py-1.5 font-bold font-mono text-sm }

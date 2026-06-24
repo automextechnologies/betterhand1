@@ -1,112 +1,143 @@
 import { Link } from 'react-router-dom'
 import Logo from '../components/common/Logo'
-import { Droplets, MapPin, MessageCircle, Users, Award, Calendar, ArrowRight, CheckCircle, Heart, Shield, Zap, Clock, Building2, Droplet, Landmark, HeartPulse } from 'lucide-react'
+import { Droplets, MapPin, MessageCircle, Users, Award, Calendar, ArrowRight, CheckCircle, Heart, Shield, Zap, Clock, Building2, Droplet, Landmark, Activity, ChevronRight } from 'lucide-react'
 
-const delay = (i) => ({ animationDelay:`${i*100}ms` })
+const delay = (i) => ({ animationDelay: `${i * 100}ms` })
 
 export default function Landing() {
   return (
-    <div className="min-h-screen bg-[#faf8ff] overflow-x-hidden">
+    <div className="min-h-screen bg-surface-50 overflow-x-hidden selection:bg-brand-200 selection:text-brand-900">
+      
+      {/* Dynamic Mesh Background */}
+      <div className="absolute inset-0 mesh-bg opacity-70 pointer-events-none -z-10" />
+
       {/* Nav */}
-      <nav className="sticky top-0 z-50 bg-white/70 backdrop-blur-xl border-b border-surface-200/50 px-6 lg:px-16 py-3.5 flex items-center justify-between">
-        <Logo/>
-        <div className="flex items-center gap-3">
-          <Link to="/login" className="btn-ghost text-sm font-display">Sign In</Link>
-          <Link to="/register" className="btn-primary text-sm">Get Started <ArrowRight size={14}/></Link>
+      <nav className="fixed w-full top-0 z-50 glass border-b-0 px-6 lg:px-16 py-4 flex items-center justify-between transition-all duration-300">
+        <Logo />
+        <div className="flex items-center gap-4">
+          <Link to="/login" className="text-sm font-display font-medium text-ink-600 hover:text-brand-600 transition-colors">Sign In</Link>
+          <Link to="/register" className="btn-primary text-sm shadow-glow group">
+            Get Started <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+          </Link>
         </div>
       </nav>
 
-      {/* Hero */}
-      <section className="relative px-6 lg:px-16 pt-20 pb-24 lg:pt-28 lg:pb-32">
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute -top-40 -right-40 w-[600px] h-[600px] rounded-full bg-brand-500/[.06] blur-[100px] animate-float"/>
-          <div className="absolute -bottom-20 -left-20 w-[400px] h-[400px] rounded-full bg-brand-400/[.05] blur-[80px] animate-float" style={{animationDelay:'2s'}}/>
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] opacity-[0.03]"
-            style={{backgroundImage:'radial-gradient(circle,rgba(99,102,241,.3) 1px,transparent 1px)',backgroundSize:'32px 32px'}}/>
-        </div>
-
-        <div className="relative max-w-4xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-50 border border-brand-200 text-brand-600 text-sm font-display font-medium mb-8 animate-fade-up">
-            <Heart size={14} className="animate-pulse-soft text-brand-500"/> Real-time Blood Donation Platform
+      {/* Modern Hero Section */}
+      <section className="relative px-6 lg:px-16 pt-32 pb-24 lg:pt-40 lg:pb-32 max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-12 lg:gap-8">
+        
+        {/* Hero Content */}
+        <div className="flex-1 relative z-10 lg:pr-8 text-center lg:text-left">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass border-brand-200 text-brand-600 text-sm font-display font-semibold mb-8 animate-fade-up shadow-sm">
+            <span className="relative flex h-3 w-3">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-brand-500"></span>
+            </span>
+            Live Blood Donation Network
           </div>
 
-          <h1 className="font-display text-5xl lg:text-7xl font-bold leading-[1.05] tracking-tight mb-6 animate-slide-up" style={delay(1)}>
+          <h1 className="font-display text-5xl lg:text-7xl xl:text-[5rem] font-bold leading-[1.05] tracking-tight mb-6 animate-slide-up" style={delay(1)}>
             Every Second<br/>
-            <span className="bg-gradient-to-r from-brand-500 via-brand-600 to-brand-700 bg-clip-text text-transparent animate-gradient bg-[length:200%]">
+            <span className="bg-gradient-to-r from-brand-600 via-rose-500 to-brand-500 bg-clip-text text-transparent animate-gradient bg-[length:200%]">
               Saves A Life
             </span>
           </h1>
 
-          <p className="text-surface-500 font-body text-lg lg:text-xl max-w-2xl mx-auto mb-10 leading-relaxed animate-slide-up" style={delay(2)}>
-            BetterHand connects hospitals with blood donors in real-time.
-            GPS matching, live tracking, instant chat — saving lives faster.
+          <p className="text-ink-500 font-body text-lg lg:text-xl max-w-2xl mx-auto lg:mx-0 mb-10 leading-relaxed animate-slide-up" style={delay(2)}>
+            BetterHand connects hospitals with eligible blood donors instantly.
+            GPS matching, live tracking, and real-time chat — revolutionizing how we save lives.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-3 justify-center mb-16 animate-slide-up" style={delay(3)}>
-            <Link to="/register" className="btn-primary text-base py-3.5 px-8 shadow-glow">
-              <Droplets size={18}/> Join as Donor
+          <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-16 animate-slide-up" style={delay(3)}>
+            <Link to="/register" className="btn-primary text-base py-4 px-8 shadow-glow hover:shadow-brand-500/30 group">
+              <Droplets size={20} className="group-hover:scale-110 transition-transform" /> Join as Donor
             </Link>
-            <Link to="/register" className="btn-secondary text-base py-3.5 px-8">
-              Register Hospital <ArrowRight size={16}/>
+            <Link to="/register" className="btn-secondary text-base py-4 px-8 bg-white/80 backdrop-blur-sm border-ink-200">
+              Register Hospital <ChevronRight size={18} />
             </Link>
           </div>
 
-          {/* Stats */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 max-w-2xl mx-auto">
+          {/* Mini Stats Grid */}
+          <div className="grid grid-cols-2 gap-6 max-w-md mx-auto lg:mx-0">
             {[
-              { val:'98%', label:'Success Rate', icon:CheckCircle, color:'text-emerald-500' },
-              { val:'12m', label:'Avg Response',  icon:Clock,       color:'text-brand-500' },
-              { val:'3×',  label:'More Donors',   icon:Users,       color:'text-amber-500' },
-              { val:'24/7',label:'Always Active',  icon:Zap,        color:'text-brand-500' },
-            ].map((s,i) => (
-              <div key={s.label} className="card p-4 text-center hover:scale-105 transition-transform animate-fade-up" style={delay(4+i)}>
-                <s.icon size={18} className={`${s.color} mx-auto mb-2`}/>
-                <p className="text-2xl font-display font-extrabold text-surface-900">{s.val}</p>
-                <p className="text-xs text-surface-400 font-body">{s.label}</p>
+              { val: '98%', label: 'Match Rate', icon: Activity, color: 'text-brand-500', bg: 'bg-brand-50' },
+              { val: '<12m', label: 'Avg Response', icon: Zap, color: 'text-amber-500', bg: 'bg-amber-50' },
+            ].map((s, i) => (
+              <div key={s.label} className="flex items-center gap-4 animate-fade-up" style={delay(4 + i)}>
+                <div className={`w-12 h-12 rounded-2xl ${s.bg} flex items-center justify-center`}>
+                  <s.icon size={24} className={s.color} />
+                </div>
+                <div className="text-left">
+                  <p className="text-2xl font-display font-bold text-ink-900 leading-none">{s.val}</p>
+                  <p className="text-sm text-ink-500 font-body mt-1">{s.label}</p>
+                </div>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Emotional image strip */}
-        <div className="relative max-w-5xl mx-auto mt-20 animate-fade-up" style={{animationDelay:'800ms'}}>
-          <div className="grid grid-cols-3 gap-4 h-48 lg:h-64">
-            <div className="rounded-3xl overflow-hidden shadow-soft">
-              <img src="https://images.unsplash.com/photo-1615461066841-6116e61058f4?w=600&q=80" alt="Blood donation" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"/>
+        {/* Hero Visuals (The WOW factor) */}
+        <div className="flex-1 relative w-full max-w-xl lg:max-w-none mx-auto animate-fade-in" style={{ animationDelay: '600ms' }}>
+          
+          {/* Main 3D Generated Image */}
+          <div className="relative z-10 w-full aspect-square rounded-[2.5rem] p-4 glass shadow-2xl rotate-3 hover:rotate-0 transition-transform duration-700 ease-out">
+            <div className="w-full h-full rounded-[2rem] overflow-hidden relative bg-white">
+              <img 
+                src="/hero-3d.png" 
+                alt="3D Blood Drop Network" 
+                className="w-full h-full object-cover scale-105 hover:scale-100 transition-transform duration-1000 ease-out"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none"></div>
             </div>
-            <div className="rounded-3xl overflow-hidden shadow-soft mt-6">
-              <img src="https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=600&q=80" alt="Helping hands" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"/>
+          </div>
+
+          {/* Floating UI Card 1 (Match Found) */}
+          <div className="absolute -left-12 top-24 z-20 glass p-4 pr-6 rounded-2xl shadow-[0_20px_40px_rgba(0,0,0,0.08)] flex items-center gap-4 animate-float" style={{ animationDelay: '0s' }}>
+            <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
+              <CheckCircle size={20} className="text-emerald-600" />
             </div>
-            <div className="rounded-3xl overflow-hidden shadow-soft">
-              <img src="https://images.unsplash.com/photo-1582719508461-905c673771fd?w=600&q=80" alt="Care" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"/>
+            <div>
+              <p className="text-xs font-bold text-ink-400 uppercase tracking-wider mb-0.5">Live Match</p>
+              <p className="text-sm font-display font-bold text-ink-900">O- Negative Donor Found</p>
+              <p className="text-xs text-brand-600 font-medium">ETA: 8 mins away</p>
+            </div>
+          </div>
+
+          {/* Floating UI Card 2 (Location) */}
+          <div className="absolute -right-8 bottom-32 z-20 glass p-4 rounded-2xl shadow-[0_20px_40px_rgba(0,0,0,0.08)] flex items-center gap-3 animate-float" style={{ animationDelay: '2s' }}>
+             <div className="w-10 h-10 rounded-full bg-brand-100 flex items-center justify-center">
+              <MapPin size={20} className="text-brand-600 animate-bounce" />
+            </div>
+            <div>
+              <p className="text-sm font-display font-bold text-ink-900">City Hospital</p>
+              <p className="text-xs text-ink-500">Requesting Urgent Blood</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* How it works */}
-      <section className="px-6 lg:px-16 py-20 bg-white/60">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-14">
-            <span className="badge badge-brand mb-3">How It Works</span>
-            <h2 className="font-display text-3xl lg:text-4xl font-bold text-surface-900 mt-3">
-              Request to donation in <span className="text-brand-600">under 12 minutes</span>
+      <section className="px-6 lg:px-16 py-28 bg-white relative">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-20">
+            <span className="badge badge-brand mb-4 px-3 py-1.5 text-sm">How It Works</span>
+            <h2 className="font-display text-4xl lg:text-5xl font-bold text-ink-900 mt-3">
+              Request to donation in <span className="text-brand-600 bg-brand-50 px-2 py-1 rounded-lg">under 12 mins</span>
             </h2>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
-              { num:'01', icon:Droplets,      title:'Request Blood',     desc:'Hospital creates urgent blood request with patient details.',     color:'from-brand-500 to-brand-600' },
-              { num:'02', icon:Users,          title:'Donors Notified',    desc:'All nearby eligible donors receive instant notification.',       color:'from-amber-500 to-amber-600' },
-              { num:'03', icon:MapPin,         title:'Live Tracking',     desc:'Hospital confirms top 3 donors and tracks on live GPS map.',     color:'from-emerald-500 to-emerald-600' },
-              { num:'04', icon:MessageCircle,  title:'Chat & Complete',    desc:'Real-time chat, arrival confirmation, donation recording.',      color:'from-rose-500 to-rose-600' },
-            ].map((s,i) => (
-              <div key={s.num} className="card p-6 group hover:scale-105 transition-all duration-300">
-                <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${s.color} flex items-center justify-center mb-4 shadow-md group-hover:scale-110 transition-transform`}>
-                  <s.icon size={22} className="text-white"/>
+              { num: '01', icon: Droplets, title: 'Request Blood', desc: 'Hospital creates an urgent request with patient details and exact blood type.', color: 'from-brand-500 to-brand-600', shadow: 'shadow-brand-500/20' },
+              { num: '02', icon: Users, title: 'Donors Notified', desc: 'All nearby eligible donors receive an instant push notification.', color: 'from-amber-400 to-amber-500', shadow: 'shadow-amber-500/20' },
+              { num: '03', icon: MapPin, title: 'Live Tracking', desc: 'Hospital confirms top 3 donors and tracks them on a live GPS map.', color: 'from-emerald-400 to-emerald-500', shadow: 'shadow-emerald-500/20' },
+              { num: '04', icon: MessageCircle, title: 'Chat & Save', desc: 'Real-time chat, seamless arrival confirmation, and donation logging.', color: 'from-sky-400 to-sky-500', shadow: 'shadow-sky-500/20' },
+            ].map((s, i) => (
+              <div key={s.num} className="relative p-8 bg-surface-50 rounded-[2rem] border border-ink-100 group hover:-translate-y-2 transition-all duration-300 hover:bg-white hover:shadow-card-hover">
+                <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${s.color} flex items-center justify-center mb-6 shadow-lg ${s.shadow} group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300`}>
+                  <s.icon size={26} className="text-white" />
                 </div>
-                <span className="text-[10px] font-display font-bold text-surface-300 uppercase tracking-widest">Step {s.num}</span>
-                <h3 className="font-display font-bold text-surface-900 mt-1 mb-2">{s.title}</h3>
-                <p className="text-surface-400 text-sm leading-relaxed font-body">{s.desc}</p>
+                <span className="absolute top-8 right-8 text-4xl font-display font-black text-ink-100 group-hover:text-ink-200 transition-colors">{s.num}</span>
+                <h3 className="font-display text-xl font-bold text-ink-900 mb-3">{s.title}</h3>
+                <p className="text-ink-500 text-sm leading-relaxed font-body">{s.desc}</p>
               </div>
             ))}
           </div>
@@ -114,29 +145,32 @@ export default function Landing() {
       </section>
 
       {/* Features */}
-      <section className="px-6 lg:px-16 py-20">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-14">
-            <span className="badge badge-green mb-3">Features</span>
-            <h2 className="font-display text-3xl lg:text-4xl font-bold text-surface-900 mt-3">
-              Everything you need to <span className="text-emerald-600">save lives</span>
+      <section className="px-6 lg:px-16 py-28 bg-surface-50 relative overflow-hidden">
+        {/* Background glow for features */}
+        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-brand-200/20 rounded-full blur-[120px] -z-10" />
+        
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-20">
+            <span className="badge badge-green mb-4 px-3 py-1.5 text-sm">Features</span>
+            <h2 className="font-display text-4xl lg:text-5xl font-bold text-ink-900 mt-3">
+              Everything you need to <span className="text-emerald-600 bg-emerald-50 px-2 py-1 rounded-lg">save lives</span>
             </h2>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
-              { icon:Droplets,      title:'Instant Matching',    desc:'GPS-based matching finds eligible donors by blood group and distance instantly.',         bg:'bg-brand-50',  border:'border-brand-200',  iconColor:'text-brand-600' },
-              { icon:MapPin,        title:'Live GPS Tracking',   desc:'Track confirmed donors on interactive map with real-time location updates every 10s.',    bg:'bg-emerald-50', border:'border-emerald-200',iconColor:'text-emerald-600' },
-              { icon:MessageCircle, title:'Real-time Chat',      desc:'Instant chat between hospital and donor. One-tap call or WhatsApp integration.',          bg:'bg-sky-50',     border:'border-sky-200',    iconColor:'text-sky-600' },
-              { icon:Users,         title:'Ward Members',        desc:'Local government ward coordinators mobilize community donors for faster response.',       bg:'bg-amber-50',   border:'border-amber-200',  iconColor:'text-amber-600' },
-              { icon:Award,         title:'Badges & Ratings',    desc:'Donors earn recognition — First Drop, Lifesaver, Hero, Legend badges for milestones.',    bg:'bg-rose-50',    border:'border-rose-200',   iconColor:'text-rose-600' },
-              { icon:Calendar,      title:'Blood Camps',         desc:'Schedule community donation drives. Donors pre-register. Track capacity in real-time.',   bg:'bg-purple-50',  border:'border-purple-200', iconColor:'text-purple-600' },
+              { icon: Droplets, title: 'Instant Matching', desc: 'GPS-based matching finds eligible donors by blood group and distance instantly.', bg: 'bg-white', border: 'border-ink-200', iconBg: 'bg-brand-50', iconColor: 'text-brand-600' },
+              { icon: MapPin, title: 'Live GPS Tracking', desc: 'Track confirmed donors on an interactive map with real-time location updates every 10s.', bg: 'bg-white', border: 'border-ink-200', iconBg: 'bg-emerald-50', iconColor: 'text-emerald-600' },
+              { icon: MessageCircle, title: 'Real-time Chat', desc: 'Instant chat between hospital and donor. One-tap call or WhatsApp integration.', bg: 'bg-white', border: 'border-ink-200', iconBg: 'bg-sky-50', iconColor: 'text-sky-600' },
+              { icon: Users, title: 'Ward Members', desc: 'Local government ward coordinators mobilize community donors for faster response.', bg: 'bg-white', border: 'border-ink-200', iconBg: 'bg-amber-50', iconColor: 'text-amber-600' },
+              { icon: Award, title: 'Badges & Ratings', desc: 'Donors earn recognition — First Drop, Lifesaver, Hero, Legend badges for milestones.', bg: 'bg-white', border: 'border-ink-200', iconBg: 'bg-rose-50', iconColor: 'text-rose-600' },
+              { icon: Calendar, title: 'Blood Camps', desc: 'Schedule community donation drives. Donors pre-register. Track capacity in real-time.', bg: 'bg-white', border: 'border-ink-200', iconBg: 'bg-purple-50', iconColor: 'text-purple-600' },
             ].map(f => (
-              <div key={f.title} className={`rounded-2xl p-6 ${f.bg} ${f.border} border hover:-translate-y-1 hover:shadow-md transition-all duration-300 group`}>
-                <div className={`w-11 h-11 rounded-xl ${f.bg} ${f.border} border flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
-                  <f.icon size={20} className={f.iconColor}/>
+              <div key={f.title} className={`rounded-[2rem] p-8 ${f.bg} ${f.border} border hover:-translate-y-1.5 shadow-soft hover:shadow-card-hover transition-all duration-300 group cursor-default`}>
+                <div className={`w-14 h-14 rounded-2xl ${f.iconBg} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
+                  <f.icon size={26} className={f.iconColor} />
                 </div>
-                <h3 className="font-display font-bold text-surface-900 mb-2">{f.title}</h3>
-                <p className="text-surface-500 text-sm leading-relaxed font-body">{f.desc}</p>
+                <h3 className="font-display text-xl font-bold text-ink-900 mb-3">{f.title}</h3>
+                <p className="text-ink-500 text-[15px] leading-relaxed font-body">{f.desc}</p>
               </div>
             ))}
           </div>
@@ -144,30 +178,31 @@ export default function Landing() {
       </section>
 
       {/* 3 Roles */}
-      <section className="px-6 lg:px-16 py-20 bg-white/60">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-14">
-            <h2 className="font-display text-3xl lg:text-4xl font-bold text-surface-900">Built for <span className="text-brand-600">three roles</span></h2>
+      <section className="px-6 lg:px-16 py-32 bg-white">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-20">
+            <h2 className="font-display text-4xl lg:text-5xl font-bold text-ink-900">Built for <span className="text-brand-600 bg-brand-50 px-2 py-1 rounded-lg">three roles</span></h2>
+            <p className="text-ink-500 mt-6 text-lg max-w-2xl mx-auto">A unified ecosystem connecting every critical touchpoint in the blood donation lifecycle.</p>
           </div>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {[
-              { icon:Building2, role:'Hospital', gradient:'from-brand-600 to-brand-700', items:['Create blood requests','View top 3 donors by ETA','Live GPS tracking on map','Real-time chat with donors','Analytics dashboard','Blood camp management'] },
-              { icon:Droplet, role:'Donor', gradient:'from-brand-500 to-brand-600', items:['Instant notifications','Accept with one tap','GPS navigation to hospital','Earn badges & ratings','Donation history','Register for blood camps'] },
-              { icon:Landmark, role:'Ward Member', gradient:'from-ink-700 to-ink-900', items:['Blood alerts in your ward','Top 3 local donors list','Call/WhatsApp donors','Broadcast to ward','Contact bystanders','Ward donor directory'] },
+              { icon: Building2, role: 'Hospital', gradient: 'from-brand-600 to-brand-700', items: ['Create blood requests', 'View top 3 donors by ETA', 'Live GPS tracking on map', 'Real-time chat with donors', 'Analytics dashboard', 'Blood camp management'] },
+              { icon: Droplet, role: 'Donor', gradient: 'from-brand-400 to-brand-500', items: ['Instant notifications', 'Accept with one tap', 'GPS navigation to hospital', 'Earn badges & ratings', 'Donation history', 'Register for blood camps'] },
+              { icon: Landmark, role: 'Ward Member', gradient: 'from-ink-800 to-ink-900', items: ['Blood alerts in your ward', 'Top 3 local donors list', 'Call/WhatsApp donors', 'Broadcast to ward', 'Contact bystanders', 'Ward donor directory'] },
             ].map(r => (
-              <div key={r.role} className="card p-6 group hover:scale-[1.02] transition-all duration-300">
-                <div className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-br ${r.gradient} text-white font-body font-bold text-sm mb-5 shadow-md`}>
-                  <r.icon size={16}/> {r.role}
+              <div key={r.role} className="card p-8 group hover:-translate-y-2 hover:shadow-card-hover transition-all duration-300 rounded-[2rem]">
+                <div className={`inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-br ${r.gradient} text-white font-body font-bold text-sm mb-8 shadow-md`}>
+                  <r.icon size={18} /> {r.role}
                 </div>
-                <ul className="space-y-2.5 mb-6">
+                <ul className="space-y-4 mb-10">
                   {r.items.map(item => (
-                    <li key={item} className="flex items-start gap-2.5 text-sm text-surface-500 font-body">
-                      <CheckCircle size={15} className="text-emerald-500 mt-0.5 shrink-0"/>
+                    <li key={item} className="flex items-start gap-3 text-[15px] text-ink-600 font-body">
+                      <CheckCircle size={18} className="text-emerald-500 shrink-0" />
                       {item}
                     </li>
                   ))}
                 </ul>
-                <Link to="/register" className="btn-primary w-full text-xs py-2.5">Register as {r.role}</Link>
+                <Link to="/register" className="btn-secondary w-full text-sm py-3.5 group-hover:bg-brand-50 group-hover:text-brand-600 group-hover:border-brand-300">Register as {r.role}</Link>
               </div>
             ))}
           </div>
@@ -175,30 +210,38 @@ export default function Landing() {
       </section>
 
       {/* CTA */}
-      <section className="px-6 lg:px-16 py-20 text-center">
-        <div className="max-w-xl mx-auto">
-          <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center mx-auto mb-8 shadow-glow animate-float">
-            <Droplets size={36} className="text-white"/>
+      <section className="relative px-6 lg:px-16 py-32 text-center overflow-hidden">
+        <div className="absolute inset-0 bg-ink-900 -z-20" />
+        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=1600&q=80')] bg-cover bg-center opacity-10 -z-10 mix-blend-overlay" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-full bg-gradient-to-b from-brand-600/20 to-transparent blur-3xl -z-10" />
+
+        <div className="max-w-3xl mx-auto glass-dark p-12 lg:p-20 rounded-[3rem]">
+          <div className="w-24 h-24 rounded-3xl bg-gradient-to-br from-brand-500 to-brand-600 flex items-center justify-center mx-auto mb-10 shadow-glow animate-float">
+            <Droplets size={44} className="text-white" />
           </div>
-          <h2 className="font-display text-3xl lg:text-4xl font-extrabold text-surface-900 mb-4">Ready to save lives?</h2>
-          <p className="text-surface-400 text-lg font-body mb-8">Every registration could save someone today.</p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Link to="/register" className="btn-primary text-base py-3.5 px-10 shadow-glow">Get Started</Link>
-            <Link to="/login" className="btn-secondary text-base py-3.5 px-10">Sign In</Link>
+          <h2 className="font-display text-4xl lg:text-6xl font-extrabold text-white mb-6 tracking-tight">Ready to save lives?</h2>
+          <p className="text-ink-200 text-lg lg:text-xl font-body mb-12 max-w-xl mx-auto">Join thousands of donors and hospitals working together to ensure no life is lost due to blood shortage.</p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link to="/register" className="btn-primary text-lg py-4 px-12 shadow-[0_0_40px_rgba(225,29,72,0.4)] hover:shadow-[0_0_60px_rgba(225,29,72,0.6)]">
+              Get Started Now
+            </Link>
+            <Link to="/login" className="btn-secondary text-lg py-4 px-12 bg-white/10 text-white border-white/20 hover:bg-white/20 hover:border-white/30 hover:text-white">
+              Sign In
+            </Link>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-surface-200/60 px-6 lg:px-16 py-8 bg-white/40">
-        <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <Logo size="sm"/>
-          <div className="flex gap-6 text-xs text-surface-400 font-body">
+      <footer className="border-t border-ink-200 px-6 lg:px-16 py-12 bg-surface-50">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+          <Logo size="sm" />
+          <div className="flex gap-8 text-sm text-ink-500 font-body font-medium">
             <Link to="/privacy" className="hover:text-brand-600 transition-colors">Privacy Policy</Link>
             <Link to="/terms" className="hover:text-brand-600 transition-colors">Terms & Conditions</Link>
             <Link to="/login" className="hover:text-brand-600 transition-colors">Sign In</Link>
           </div>
-          <p className="text-xs text-surface-300 font-body">© 2024 BetterHand. All rights reserved.</p>
+          <p className="text-sm text-ink-400 font-body">© 2026 BetterHand. All rights reserved.</p>
         </div>
       </footer>
     </div>
