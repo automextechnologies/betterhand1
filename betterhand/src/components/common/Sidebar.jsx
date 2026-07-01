@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
+import { motion } from 'framer-motion'
 import { useAuthStore } from '../../store/authStore'
 import { authApi } from '../../api'
 import Logo from './Logo'
@@ -39,7 +40,18 @@ export default function Sidebar() {
   const nav = role==='hospital'?hospitalNav:role==='donor'?donorNav:wardNav
   const displayName = user?.profile?.name||user?.profile?.full_name||user?.profile?.member?.full_name||user?.email?.split('@')[0]
   const roleName = role==='hospital'?'Hospital':role==='donor'?'Donor':'Ward Member'
-  const roleColor = role==='hospital'?'badge-blue':role==='donor'?'badge-red':'badge-green'
+  
+  const getBadgeColor = () => {
+    if (role === 'hospital') return 'bg-brand-50 text-brand-600 border-brand-200'
+    if (role === 'donor') return 'bg-accent-50 text-accent-600 border-accent-200'
+    return 'bg-emerald-50 text-emerald-600 border-emerald-200'
+  }
+
+  const getGradient = () => {
+    if (role === 'hospital') return 'from-brand-500 to-brand-600 shadow-brand-500/30'
+    if (role === 'donor') return 'from-accent-500 to-accent-600 shadow-accent-500/30'
+    return 'from-emerald-500 to-emerald-600 shadow-emerald-500/30'
+  }
 
   const handleLogout = async () => {
     try { await authApi.logout({ refresh:refreshToken }) } catch {}
@@ -48,41 +60,61 @@ export default function Sidebar() {
 
   return (
     <>
-      <aside className="w-[15rem] min-h-screen flex flex-col bg-white/80 backdrop-blur-xl border-r border-surface-200/60 shrink-0">
-        <div className="p-5 border-b border-surface-100"><Logo/></div>
-        <div className="px-5 pt-4 pb-2"><span className={`badge ${roleColor}`}>{roleName}</span></div>
-        <nav className="flex-1 px-3 py-2 space-y-0.5">
+      <aside className="w-[17rem] min-h-screen flex flex-col glass border-r border-white/50 shrink-0 z-40">
+        <div className="p-6 border-b border-ink-100/50">
+          <Logo/>
+        </div>
+        
+        <div className="px-6 pt-5 pb-3">
+          <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold border ${getBadgeColor()}`}>
+            {roleName}
+          </span>
+        </div>
+        
+        <nav className="flex-1 px-4 py-2 space-y-1.5 relative overflow-y-auto overflow-x-hidden">
           {nav.map(({to,icon:Icon,label}) => (
             <NavLink key={to} to={to} end={['/hospital','/donor','/ward'].includes(to)}
               className={({isActive}) =>
-                `group flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-display font-medium transition-all duration-200
+                `relative group flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-[14.5px] font-medium transition-all z-10
                  ${isActive
-                   ? 'bg-gradient-to-r from-brand-600 to-brand-700 text-white shadow-md scale-[1.01]'
-                   : 'text-surface-500 hover:text-brand-600 hover:bg-brand-50/80 hover:translate-x-0.5'}`
+                   ? 'text-white shadow-md'
+                   : 'text-ink-500 hover:text-ink-900 hover:bg-white/50'}`
               }>
-              <Icon size={17} strokeWidth={1.8}/>
-              {label}
+              {({isActive}) => (
+                <>
+                  {isActive && (
+                    <motion.div
+                      layoutId="sidebar-active"
+                      className={`absolute inset-0 rounded-xl bg-gradient-to-r ${getGradient()} -z-10`}
+                      transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                    />
+                  )}
+                  <Icon size={20} strokeWidth={isActive ? 2 : 1.8} className={isActive ? 'text-white' : 'text-ink-400 group-hover:text-ink-600 transition-colors'}/>
+                  {label}
+                </>
+              )}
             </NavLink>
           ))}
         </nav>
-        <div className="p-3 border-t border-surface-100">
-          <div className="flex items-center gap-2.5 px-3 py-2.5">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 text-white flex items-center justify-center text-xs font-display font-bold shadow-sm">
+        
+        <div className="p-4 border-t border-ink-100/50 bg-white/40">
+          <div className="flex items-center gap-3 px-2 py-2 mb-2">
+            <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${getGradient()} text-white flex items-center justify-center text-sm font-bold shadow-md`}>
               {displayName?.[0]?.toUpperCase()||'?'}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-xs font-display font-semibold text-surface-800 truncate">{displayName}</p>
-              <p className="text-[10px] text-surface-400 truncate">{user?.email}</p>
+              <p className="text-sm font-bold text-ink-900 truncate">{displayName}</p>
+              <p className="text-xs text-ink-500 truncate font-medium">{user?.email}</p>
             </div>
             {(role==='hospital'||role==='donor') && (
-              <button onClick={()=>setShowProfile(true)} className="p-1.5 rounded-lg hover:bg-brand-50 text-surface-400 hover:text-brand-600 transition-colors">
-                <Pencil size={12}/>
+              <button onClick={()=>setShowProfile(true)} className="p-2 rounded-lg bg-white/60 hover:bg-white text-ink-400 hover:text-brand-600 transition-all shadow-sm border border-ink-100">
+                <Pencil size={14}/>
               </button>
             )}
           </div>
           <button onClick={handleLogout}
-            className="flex items-center gap-2.5 w-full px-3 py-2 rounded-xl text-xs font-display font-medium text-surface-400 hover:text-rose-600 hover:bg-rose-50 transition-all">
-            <LogOut size={14}/>Log out
+            className="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-sm font-bold text-ink-500 hover:text-rose-600 hover:bg-rose-50 transition-all group">
+            <LogOut size={18} className="text-ink-400 group-hover:text-rose-500 transition-colors"/>Log out
           </button>
         </div>
       </aside>

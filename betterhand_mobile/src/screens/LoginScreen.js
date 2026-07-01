@@ -1,12 +1,31 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, Dimensions, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, Dimensions, ScrollView, ActivityIndicator, Alert } from 'react-native';
 import { ArrowLeft, Lock, Mail } from 'lucide-react-native';
+import { authApi } from '../api';
+import { useAuthStore } from '../store/authStore';
 
 const { width } = Dimensions.get('window');
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const login = useAuthStore(state => state.login);
+
+  const handleLogin = async () => {
+    if (!email || !password) return Alert.alert('Error', 'Please fill in all fields');
+    try {
+      setLoading(true);
+      const data = await authApi.login({ email: email.toLowerCase(), password });
+      await login(data.user, data.tokens);
+      // Navigation is handled automatically by App.js auth routing
+    } catch (error) {
+      console.log('Login error:', error.response?.data || error.message);
+      Alert.alert('Login Failed', error.response?.data?.detail || 'Invalid email or password. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <KeyboardAvoidingView 
@@ -68,8 +87,17 @@ export default function LoginScreen({ navigation }) {
           </View>
 
           {/* Login Button */}
-          <TouchableOpacity style={styles.primaryBtn} activeOpacity={0.8}>
-            <Text style={styles.primaryBtnText}>Sign In</Text>
+          <TouchableOpacity 
+            style={[styles.primaryBtn, loading && styles.primaryBtnDisabled]} 
+            activeOpacity={0.8}
+            onPress={handleLogin}
+            disabled={loading}
+          >
+            {loading ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text style={styles.primaryBtnText}>Sign In</Text>
+            )}
           </TouchableOpacity>
 
         </View>

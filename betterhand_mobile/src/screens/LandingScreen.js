@@ -70,7 +70,7 @@ export default function LandingScreen({ navigation }) {
                 <Zap size={22} color="#f59e0b" />
               </View>
               <View>
-                <Text style={styles.statVal}><12m</Text>
+                <Text style={styles.statVal}>&lt;12m</Text>
                 <Text style={styles.statLabel}>Avg Response</Text>
               </View>
             </View>

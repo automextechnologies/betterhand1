@@ -7,6 +7,7 @@ import { Navigation, Clock, MapPin, Phone, MessageCircle } from 'lucide-react'
 import { callLink, whatsappLink, formatEta } from '../../utils/helpers'
 import toast from 'react-hot-toast'
 import Spinner from '../../components/common/Spinner'
+import { motion } from 'framer-motion'
 
 export default function DonorNavigate() {
   const { on, off } = useWsStore()
@@ -60,8 +61,9 @@ export default function DonorNavigate() {
           zoomControl: true,
           scrollWheelZoom: true,
         })
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
           maxZoom: 19,
+          attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
         }).addTo(map)
         leafletMap.current = map
         setMapReady(true)
@@ -81,8 +83,8 @@ export default function DonorNavigate() {
       // Hospital marker
       if (!hospitalMarker.current) {
         const icon = L.divIcon({
-          html: `<div style="width:44px;height:44px;background:linear-gradient(135deg,#7c3aff,#4c10c0);border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:3px solid white;box-shadow:0 4px 20px rgba(124,58,255,0.7)"></div>`,
-          iconSize:[44,44], iconAnchor:[22,44], className:''
+          html: `<div style="width:48px;height:48px;background:linear-gradient(135deg,#e11d48,#be123c);border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:4px solid white;box-shadow:0 8px 24px rgba(225,29,72,0.6);display:flex;align-items:center;justify-content:center"><div style="transform:rotate(45deg);color:white;font-weight:bold;font-size:18px;">H</div></div>`,
+          iconSize:[48,48], iconAnchor:[24,48], className:''
         })
         hospitalMarker.current = L.marker([hLat, hLng], { icon })
           .addTo(map)
@@ -91,8 +93,8 @@ export default function DonorNavigate() {
 
       // Donor marker
       const donorIcon = L.divIcon({
-        html: `<div style="width:36px;height:36px;background:linear-gradient(135deg,#10b981,#059669);border-radius:50%;border:3px solid white;box-shadow:0 4px 16px rgba(16,185,129,0.7);display:flex;align-items:center;justify-content:center;font-size:16px;">🩸</div>`,
-        iconSize:[36,36], iconAnchor:[18,18], className:''
+        html: `<div style="width:40px;height:40px;background:white;border-radius:50%;border:4px solid #10b981;box-shadow:0 4px 16px rgba(16,185,129,0.4);display:flex;align-items:center;justify-content:center;font-size:18px;">🩸</div>`,
+        iconSize:[40,40], iconAnchor:[20,20], className:''
       })
       if (donorMarker.current) {
         donorMarker.current.setLatLng([dLat, dLng])
@@ -112,7 +114,7 @@ export default function DonorNavigate() {
             setEta(Math.ceil(route.duration / 60))
             if (routeLayer.current) map.removeLayer(routeLayer.current)
             routeLayer.current = L.geoJSON(route.geometry, {
-              style: { color:'#7c3aff', weight:6, opacity:0.85 }
+              style: { color:'#e11d48', weight:6, opacity:0.8, lineCap:'round', lineJoin:'round' }
             }).addTo(map)
             map.fitBounds(L.geoJSON(route.geometry).getBounds(), { padding:[50,50] })
           }
@@ -121,7 +123,7 @@ export default function DonorNavigate() {
           // Fallback straight line
           if (routeLayer.current) map.removeLayer(routeLayer.current)
           routeLayer.current = L.polyline([[dLat,dLng],[hLat,hLng]], {
-            color:'#7c3aff', weight:4, dashArray:'12,8'
+            color:'#e11d48', weight:4, dashArray:'12,8'
           }).addTo(map)
           map.fitBounds([[dLat,dLng],[hLat,hLng]], { padding:[50,50] })
         })
@@ -153,136 +155,182 @@ export default function DonorNavigate() {
     return () => clearInterval(intervalRef.current)
   }, [activeResponse, mapReady, trackPosition])
 
-  if (loading) return <div className="flex justify-center py-20"><Spinner size={32} className="text-brand-600"/></div>
+  if (loading) return <div className="flex justify-center py-20"><Spinner size={40} className="text-brand-600"/></div>
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: { opacity: 1, transition: { staggerChildren: 0.1 } }
+  }
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 15 },
+    show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 300, damping: 24 } }
+  }
 
   if (!activeResponse) return (
-    <div className="card p-12 text-center">
-      <Navigation size={36} className="text-ink-300 mx-auto mb-4"/>
-      <h2 className=" text-xl font-semibold text-ink-900 mb-2">No Active Navigation</h2>
-      <p className="text-ink-400 text-sm">Accept a blood request first. Your route to hospital will appear here.</p>
-    </div>
+    <motion.div variants={containerVariants} initial="hidden" animate="show" className="card p-16 text-center max-w-2xl mx-auto mt-12 flex flex-col items-center justify-center">
+      <div className="w-24 h-24 bg-ink-50 rounded-full flex items-center justify-center mb-6">
+        <Navigation size={40} className="text-ink-300"/>
+      </div>
+      <h2 className="text-2xl font-display font-black text-ink-900 mb-3">No Active Navigation</h2>
+      <p className="text-ink-500 text-[15px] leading-relaxed max-w-sm">Accept a blood request first. Once the hospital confirms, your live route and instructions will appear here.</p>
+    </motion.div>
   )
 
   return (
-    <div className="space-y-4 animate-fade-in">
-      <div className="flex items-center justify-between flex-wrap gap-3">
+    <motion.div variants={containerVariants} initial="hidden" animate="show" className="space-y-6 pb-12">
+      <motion.div variants={itemVariants} className="flex items-center justify-between flex-wrap gap-4">
         <div>
-          <h1 className="section-title flex items-center gap-2">
-            <Navigation size={20} className="text-brand-600"/>Navigate to Hospital
+          <h1 className="text-3xl font-display font-black text-ink-900 flex items-center gap-3">
+            <div className="p-2.5 bg-brand-50 rounded-2xl">
+              <Navigation size={24} className="text-brand-600"/>
+            </div>
+            Navigate to Hospital
           </h1>
-          <p className="text-ink-400 text-sm mt-0.5">Live location shared every 10s · Route auto-updates</p>
+          <p className="text-ink-500 text-[15px] font-medium mt-2 flex items-center gap-2">
+            <span className="relative flex h-3 w-3">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-brand-500"></span>
+            </span>
+            Live location shared • Route updates automatically
+          </p>
         </div>
-      </div>
+      </motion.div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-3 gap-3">
+      {/* Stats Bento */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {[
-          { icon:Clock, label:'ETA', val:eta ? formatEta(eta) : '—', color:'text-amber-400' },
-          { icon:MapPin, label:'Distance', val:distance ? `${distance} km` : '—', color:'text-brand-600' },
-          { icon:Navigation, label:'Status', val:'En Route', color:'text-emerald-600' },
+          { icon:Clock, label:'Estimated Arrival', val:eta ? formatEta(eta) : '—', color:'text-amber-500', bg:'bg-amber-50' },
+          { icon:MapPin, label:'Distance Remaining', val:distance ? `${distance} km` : '—', color:'text-brand-600', bg:'bg-brand-50' },
+          { icon:Navigation, label:'Mission Status', val:'En Route', color:'text-emerald-600', bg:'bg-emerald-50' },
         ].map(s => (
-          <div key={s.label} className="glass rounded-2xl p-3 text-center border border-ink-200">
-            <s.icon size={16} className={`${s.color} mx-auto mb-1`}/>
-            <p className="text-lg  font-bold text-ink-900">{s.val}</p>
-            <p className="text-xs text-ink-400">{s.label}</p>
-          </div>
+          <motion.div variants={itemVariants} key={s.label} className="card p-6 flex items-center gap-5">
+            <div className={`w-14 h-14 rounded-2xl ${s.bg} flex items-center justify-center shrink-0 shadow-inner`}>
+              <s.icon size={24} className={s.color}/>
+            </div>
+            <div>
+              <p className="text-3xl font-display font-black text-ink-900 leading-none">{s.val}</p>
+              <p className="text-xs font-bold text-ink-500 uppercase tracking-wider mt-1.5">{s.label}</p>
+            </div>
+          </motion.div>
         ))}
       </div>
 
-      {/* Hospital + Patient info card */}
-      <div className="card p-4 space-y-3">
-        <div className="flex items-start justify-between gap-3 flex-wrap">
-          <div>
-            <h3 className=" font-semibold text-ink-900">{activeResponse.hospital_name}</h3>
-            <p className="text-sm text-ink-500 mt-0.5">
-              {activeResponse.blood_group} · {activeResponse.units_needed} unit(s) · {activeResponse.urgency}
-            </p>
-            {activeResponse.patient_name && (
-              <p className="text-xs text-brand-600 mt-1">👤 Patient: {activeResponse.patient_name}</p>
-            )}
-            {activeResponse.patient_condition && (
-              <p className="text-xs text-ink-400 mt-0.5">{activeResponse.patient_condition}</p>
-            )}
-          </div>
-        </div>
-
-        {/* Contact buttons — Hospital + Patient ward */}
-        <div className="grid grid-cols-2 gap-2">
-          {activeResponse.hospital_phone && (
-            <a href={callLink(activeResponse.hospital_phone)}
-              className="flex items-center justify-center gap-2 py-2.5 rounded-xl bg-sky-600/20 text-sky-400 border border-sky-600/30 hover:bg-sky-600/30 transition-colors text-sm  font-semibold">
-              <Phone size={14}/> Call Hospital
-            </a>
-          )}
-          {activeResponse.hospital_whatsapp && (
-            <a href={whatsappLink(activeResponse.hospital_whatsapp)} target="_blank" rel="noreferrer"
-              className="flex items-center justify-center gap-2 py-2.5 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-200 hover:bg-emerald-50 transition-colors text-sm  font-semibold">
-              <MessageCircle size={14}/> WhatsApp Hospital
-            </a>
-          )}
-          {/* Patient ward contact */}
-          {activeResponse.ward_contact_phone && (
-            <a href={callLink(activeResponse.ward_contact_phone)}
-              className="flex items-center justify-center gap-2 py-2.5 rounded-xl bg-purple-600/20 text-purple-400 border border-purple-600/30 hover:bg-purple-600/30 transition-colors text-sm  font-semibold">
-              <Phone size={14}/> Ward Contact
-            </a>
-          )}
-          {activeResponse.hospital_phone && (
-            <a href={`https://maps.google.com/?q=${activeResponse.hospital_latitude},${activeResponse.hospital_longitude}`}
-               target="_blank" rel="noreferrer"
-              className="flex items-center justify-center gap-2 py-2.5 rounded-xl bg-amber-600/20 text-amber-400 border border-amber-600/30 hover:bg-amber-600/30 transition-colors text-sm  font-semibold">
-              <MapPin size={14}/> Open in Maps
-            </a>
-          )}
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
-        {/* Map */}
-        <div className="xl:col-span-2 space-y-2">
-          <div className="flex items-center justify-between">
-            <h3 className=" font-semibold text-ink-600 text-sm flex items-center gap-1.5">
-              <MapPin size={13} className="text-brand-600"/> Live Route Map
-            </h3>
-            <span className="badge badge-green text-xs">● Updating every 10s</span>
-          </div>
-          {/* Map container — fixed height, visible background */}
-          <div
-            ref={mapDivRef}
-            style={{
-              height: '380px',
-              width: '100%',
-              borderRadius: '1rem',
-              overflow: 'hidden',
-              border: '1px solid rgba(255,255,255,0.07)',
-              background: '#1a1830',
-              position: 'relative',
-            }}
-          >
-            {!mapReady && (
-              <div className="absolute inset-0 flex flex-col items-center justify-center text-ink-400 gap-2">
-                <Spinner size={24} className="text-brand-600"/>
-                <p className="text-xs">Loading map…</p>
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 items-start">
+        {/* Map & Hospital Info */}
+        <div className="xl:col-span-2 space-y-6">
+          
+          {/* Hospital + Patient info card */}
+          <motion.div variants={itemVariants} className="card p-6">
+            <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
+              <div className="space-y-4">
+                <div>
+                  <h3 className="text-2xl font-display font-black text-ink-900">{activeResponse.hospital_name}</h3>
+                  <div className="flex items-center gap-2 mt-2">
+                    <span className="bg-brand-50 text-brand-700 px-3 py-1 rounded-lg text-[13px] font-bold">
+                      {activeResponse.blood_group}
+                    </span>
+                    <span className="bg-ink-100 text-ink-700 px-3 py-1 rounded-lg text-[13px] font-bold">
+                      {activeResponse.units_needed} unit(s)
+                    </span>
+                    <span className={`px-3 py-1 rounded-lg text-[13px] font-bold
+                      ${activeResponse.urgency === 'Critical' ? 'bg-brand-100 text-brand-700' : 
+                        activeResponse.urgency === 'High' ? 'bg-amber-100 text-amber-700' : 'bg-sky-100 text-sky-700'}`}>
+                      {activeResponse.urgency}
+                    </span>
+                  </div>
+                </div>
+                
+                {(activeResponse.patient_name || activeResponse.patient_condition) && (
+                  <div className="bg-ink-50 p-4 rounded-xl border border-ink-100">
+                    {activeResponse.patient_name && (
+                      <p className="text-[15px] font-bold text-ink-900 mb-1">Patient: {activeResponse.patient_name}</p>
+                    )}
+                    {activeResponse.patient_condition && (
+                      <p className="text-sm text-ink-600">{activeResponse.patient_condition}</p>
+                    )}
+                  </div>
+                )}
               </div>
-            )}
-          </div>
-          <div className="flex items-center gap-4 text-xs text-ink-400">
-            <span className="flex items-center gap-1.5"><div className="w-3 h-3 rounded-full bg-brand-500"/>Hospital</span>
-            <span className="flex items-center gap-1.5"><div className="w-3 h-3 rounded-full bg-emerald-500"/>You</span>
-            <span className="flex items-center gap-1.5"><div className="w-8 h-0.5 bg-brand-500"/>Road Route</span>
-          </div>
+
+              {/* Contact buttons */}
+              <div className="flex flex-col gap-3 min-w-[200px]">
+                {activeResponse.hospital_phone && (
+                  <a href={callLink(activeResponse.hospital_phone)}
+                    className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-ink-50 text-ink-900 hover:bg-ink-100 transition-colors text-[14px] font-bold border border-ink-200">
+                    <Phone size={16} className="text-sky-600"/> Call Hospital
+                  </a>
+                )}
+                {activeResponse.hospital_whatsapp && (
+                  <a href={whatsappLink(activeResponse.hospital_whatsapp)} target="_blank" rel="noreferrer"
+                    className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition-colors text-[14px] font-bold border border-emerald-200">
+                    <MessageCircle size={16}/> WhatsApp Hospital
+                  </a>
+                )}
+                {activeResponse.ward_contact_phone && (
+                  <a href={callLink(activeResponse.ward_contact_phone)}
+                    className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-purple-50 text-purple-700 hover:bg-purple-100 transition-colors text-[14px] font-bold border border-purple-200">
+                    <Phone size={16}/> Ward Contact
+                  </a>
+                )}
+                {activeResponse.hospital_phone && (
+                  <a href={`https://maps.google.com/?q=${activeResponse.hospital_latitude},${activeResponse.hospital_longitude}`}
+                     target="_blank" rel="noreferrer"
+                    className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-brand-50 text-brand-700 hover:bg-brand-100 transition-colors text-[14px] font-bold border border-brand-200">
+                    <MapPin size={16}/> Open in G-Maps
+                  </a>
+                )}
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Map */}
+          <motion.div variants={itemVariants} className="card p-4 space-y-4">
+            <div className="flex items-center justify-between px-2">
+              <h3 className="font-display font-bold text-ink-900 text-lg flex items-center gap-2">
+                <MapPin size={18} className="text-brand-600"/> Live Route Tracking
+              </h3>
+            </div>
+            
+            <div
+              ref={mapDivRef}
+              className="w-full rounded-[20px] overflow-hidden border border-ink-200 relative z-0"
+              style={{ height: '420px', background: '#f8f9fa' }}
+            >
+              {!mapReady && (
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-ink-400 bg-ink-50/50 backdrop-blur-sm gap-3 z-10">
+                  <Spinner size={32} className="text-brand-600"/>
+                  <p className="text-sm font-bold text-ink-600">Initializing Navigation Module…</p>
+                </div>
+              )}
+            </div>
+            
+            <div className="flex items-center justify-center gap-6 text-sm font-bold text-ink-600 pt-2 pb-1">
+              <span className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-brand-600 shadow-sm"/>Destination</span>
+              <span className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-emerald-500 shadow-sm"/>Your Location</span>
+            </div>
+          </motion.div>
         </div>
+        
         {/* Chat */}
-        <div className="xl:col-span-1">
-          <ChatWindow
-            responseId={activeResponse.id}
-            otherName={activeResponse.hospital_name}
-            otherPhone={activeResponse.hospital_phone}
-            otherWhatsapp={activeResponse.hospital_whatsapp}
-            className="h-full min-h-96"
-          />
-        </div>
+        <motion.div variants={itemVariants} className="xl:col-span-1 h-full">
+          <div className="card h-full overflow-hidden flex flex-col min-h-[600px] shadow-sm border border-ink-200">
+            <div className="p-5 border-b border-ink-100 bg-ink-50/50">
+              <h3 className="font-display font-bold text-ink-900 flex items-center gap-2">
+                <MessageCircle size={18} className="text-brand-600"/> Live Chat
+              </h3>
+              <p className="text-xs text-ink-500 mt-1">Communicate directly with {activeResponse.hospital_name}</p>
+            </div>
+            <ChatWindow
+              responseId={activeResponse.id}
+              otherName={activeResponse.hospital_name}
+              otherPhone={activeResponse.hospital_phone}
+              otherWhatsapp={activeResponse.hospital_whatsapp}
+              className="flex-1 border-0 rounded-none shadow-none"
+            />
+          </div>
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   )
 }

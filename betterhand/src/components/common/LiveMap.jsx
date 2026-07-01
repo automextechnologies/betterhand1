@@ -9,6 +9,7 @@ export default function LiveMap({ hospital, donors = [], className = '' }) {
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return
     import('leaflet').then(L => {
+      if (!containerRef.current || containerRef.current._leaflet_id) return
       const map = L.map(containerRef.current, {
         center: hospital
           ? [parseFloat(hospital.lat), parseFloat(hospital.lng)]

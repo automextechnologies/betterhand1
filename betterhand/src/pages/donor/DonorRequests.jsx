@@ -2,9 +2,10 @@ import { useState, useEffect, useCallback } from 'react'
 import { donationApi } from '../../api'
 import { AUTO_REFRESH_EVENT } from '../../components/common/Layout'
 import { Bell, MapPin, Clock, Building, User, Check, X, RefreshCw, Landmark } from 'lucide-react'
-import { fmtAgo, urgencyColor } from '../../utils/helpers'
+import { fmtAgo } from '../../utils/helpers'
 import Spinner from '../../components/common/Spinner'
 import toast from 'react-hot-toast'
+import { motion } from 'framer-motion'
 
 export default function DonorRequests() {
   const [pending, setPending] = useState([])
@@ -41,73 +42,123 @@ export default function DonorRequests() {
     } else respond(resp.id,'accepted')
   }
 
-  if (loading) return <div className="flex justify-center py-20"><Spinner size={32} className="text-brand-600"/></div>
+  if (loading) return <div className="flex justify-center py-20"><Spinner size={40} className="text-brand-600"/></div>
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: { opacity: 1, transition: { staggerChildren: 0.1 } }
+  }
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 15 },
+    show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 300, damping: 24 } }
+  }
 
   return (
-    <div className="space-y-6 animate-fade-in">
-      <div className="flex items-center justify-between flex-wrap gap-3">
+    <motion.div variants={containerVariants} initial="hidden" animate="show" className="space-y-6 pb-12">
+      <motion.div variants={itemVariants} className="flex items-center justify-between flex-wrap gap-4">
         <div>
-          <h1 className="section-title flex items-center gap-2"><Bell size={22} className="text-brand-600"/> Blood Requests</h1>
-          <p className="text-ink-400 text-sm mt-0.5">Hospitals near you that need blood</p>
+          <h1 className="text-3xl font-display font-black text-ink-900 flex items-center gap-3">
+            <div className="p-2.5 bg-brand-50 rounded-2xl">
+              <Bell size={24} className="text-brand-600"/>
+            </div>
+            Blood Requests
+          </h1>
+          <p className="text-ink-500 text-[15px] font-medium mt-2">Hospitals near you that urgently need your blood type.</p>
         </div>
-        <button onClick={load} className="btn-secondary"><RefreshCw size={14}/> Refresh</button>
-      </div>
+        <button onClick={load} className="btn-secondary shadow-sm hover:shadow-md">
+          <RefreshCw size={16}/> Refresh
+        </button>
+      </motion.div>
 
       {pending.length === 0 ? (
-        <div className="card p-10 text-center">
-          <Bell size={28} className="text-ink-200 mx-auto mb-3"/>
-          <p className="text-ink-400 text-sm">No pending requests right now.</p>
-          <p className="text-ink-300 text-xs mt-1">You'll be notified when a hospital needs your blood type.</p>
-        </div>
+        <motion.div variants={itemVariants} className="card p-12 text-center flex flex-col items-center justify-center min-h-[40vh]">
+          <div className="w-20 h-20 bg-ink-50 rounded-full flex items-center justify-center mb-6">
+            <Bell size={32} className="text-ink-400"/>
+          </div>
+          <h3 className="text-xl font-display font-bold text-ink-900 mb-2">No pending requests right now</h3>
+          <p className="text-ink-500 text-[15px] max-w-sm mx-auto leading-relaxed">You'll be notified immediately when a hospital or ward member requires your assistance.</p>
+        </motion.div>
       ) : (
-        <div className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {pending.map(resp => (
-            <div key={resp.id} className="card p-4">
-              <div className="flex items-start gap-3 mb-3">
-                <div className="w-14 h-14 rounded-xl bg-brand-50 border border-brand-200 flex items-center justify-center font-mono font-bold text-brand-600 text-lg shrink-0">
+            <motion.div key={resp.id} variants={itemVariants} className={`card flex flex-col p-6 transition-all ${resp.via_ward ? 'border-2 border-emerald-400 shadow-[0_8px_20px_rgba(16,185,129,0.15)]' : ''}`}>
+              {resp.via_ward && (
+                <div className="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white text-[10px] font-black uppercase tracking-widest px-4 py-1.5 rounded-b-xl rounded-t-none w-fit self-start mb-4 -mt-6 -ml-6 shadow-sm">
+                  Ward Priority
+                </div>
+              )}
+
+              <div className="flex items-start gap-4 mb-4">
+                <div className="w-14 h-14 rounded-2xl bg-brand-50 border border-brand-100 flex items-center justify-center font-mono font-black text-brand-600 text-xl shrink-0 shadow-inner">
                   {resp.blood_group}
                 </div>
                 <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap mb-1">
+                    <h4 className="text-[17px] font-display font-bold text-ink-900 flex items-center gap-1.5"><Building size={16} className="text-ink-400"/> {resp.hospital_name}</h4>
+                  </div>
                   <div className="flex items-center gap-2 flex-wrap">
-                    <h4 className="font-semibold text-ink-900 flex items-center gap-1"><Building size={14}/> {resp.hospital_name}</h4>
-                    <span className={urgencyColor(resp.urgency)}>{resp.urgency}</span>
-                    {resp.via_ward && <span className="badge badge-brand flex items-center gap-1"><Landmark size={10}/> Via Ward Member</span>}
+                    <span className={`px-2.5 py-0.5 rounded-lg text-[11px] font-bold uppercase tracking-wider
+                      ${resp.urgency === 'Critical' ? 'bg-brand-100 text-brand-700' : 
+                        resp.urgency === 'High' ? 'bg-amber-100 text-amber-700' : 'bg-sky-100 text-sky-700'}`}>
+                      {resp.urgency}
+                    </span>
+                    <span className="flex items-center gap-1 text-[13px] font-bold text-ink-600">
+                      • {resp.units_needed} unit{resp.units_needed>1?'s':''}
+                    </span>
                   </div>
-                  {resp.patient_name && <p className="text-xs text-ink-500 mt-1 flex items-center gap-1"><User size={11}/> {resp.patient_name}</p>}
-                  {resp.patient_condition && <p className="text-xs text-ink-400 mt-0.5">{resp.patient_condition}</p>}
-                  <div className="flex gap-3 mt-1 text-xs text-ink-400">
-                    <span>{resp.units_needed} unit{resp.units_needed>1?'s':''}</span>
-                    {resp.distance_km != null && <span className="flex items-center gap-1"><MapPin size={10}/> {resp.distance_km} km</span>}
-                    <span className="flex items-center gap-1"><Clock size={10}/> {fmtAgo(resp.created_at)}</span>
-                  </div>
-                  {resp.via_ward && resp.ward_member_name && (
-                    <p className="text-xs text-brand-600 mt-1">Coordinated by {resp.ward_member_name}</p>
-                  )}
                 </div>
               </div>
+
+              <div className="space-y-3 flex-1 mb-6">
+                {resp.patient_name && (
+                  <div className="flex items-start gap-2 text-sm">
+                    <User size={16} className="text-ink-400 mt-0.5 shrink-0"/>
+                    <div>
+                      <p className="font-semibold text-ink-900">{resp.patient_name}</p>
+                      {resp.patient_condition && <p className="text-ink-500 text-[13px]">{resp.patient_condition}</p>}
+                    </div>
+                  </div>
+                )}
+                
+                {resp.via_ward && resp.ward_member_name && (
+                  <div className="flex items-start gap-2 text-sm bg-emerald-50 p-2.5 rounded-xl border border-emerald-100">
+                    <Landmark size={16} className="text-emerald-600 mt-0.5 shrink-0"/>
+                    <div>
+                      <p className="font-bold text-emerald-800">Coordinated by {resp.ward_member_name}</p>
+                    </div>
+                  </div>
+                )}
+                
+                <div className="flex flex-wrap gap-4 pt-2 text-[13px] font-medium text-ink-500">
+                  {resp.distance_km != null && <span className="flex items-center gap-1.5 bg-ink-50 px-2.5 py-1 rounded-lg"><MapPin size={14}/> {resp.distance_km} km away</span>}
+                  <span className="flex items-center gap-1.5 bg-ink-50 px-2.5 py-1 rounded-lg"><Clock size={14}/> {fmtAgo(resp.created_at)}</span>
+                </div>
+              </div>
+
               {resp.status === 'pending' ? (
-                <div className="grid grid-cols-2 gap-2">
-                  <button onClick={() => handleAccept(resp)} disabled={responding[resp.id]}
-                    className="btn-primary justify-center">
-                    {responding[resp.id] ? <Spinner size={15}/> : <Check size={15}/>} Accept
-                  </button>
+                <div className="grid grid-cols-2 gap-3 mt-auto pt-4 border-t border-ink-100">
                   <button onClick={() => respond(resp.id,'rejected')} disabled={responding[resp.id]}
-                    className="btn-secondary justify-center">
-                    <X size={15}/> Decline
+                    className="btn-ghost justify-center bg-ink-50">
+                    <X size={18}/> Decline
+                  </button>
+                  <button onClick={() => handleAccept(resp)} disabled={responding[resp.id]}
+                    className="btn-primary justify-center bg-gradient-to-r from-brand-600 to-brand-500 shadow-brand-500/25">
+                    {responding[resp.id] ? <Spinner size={18}/> : <Check size={18}/>} Accept
                   </button>
                 </div>
               ) : (
-                <div className={`text-center py-2 rounded-xl text-sm font-semibold
+                <div className={`text-center py-3 rounded-2xl text-[13px] font-bold mt-auto
                   ${resp.status==='accepted'?'bg-emerald-50 text-emerald-700':resp.status==='confirmed'?'bg-brand-50 text-brand-700':'bg-ink-100 text-ink-500'}`}>
-                  {resp.status==='accepted' ? '✓ You accepted — awaiting confirmation'
-                   : resp.status==='confirmed' ? '🎉 Confirmed! Head to the hospital'
+                  {resp.status==='accepted' ? '✓ Accepted — awaiting confirmation'
+                   : resp.status==='confirmed' ? '🎉 Confirmed! Head to hospital'
                    : resp.status}
                 </div>
               )}
-            </div>
+            </motion.div>
           ))}
         </div>
       )}
-    </div>
+    </motion.div>
   )
 }
